@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A clean AI chat app powered by Puter.js."><title>Puter AI Chat</title>
+<link rel="stylesheet" href="style.css"><script src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+<div class="app-shell"><aside class="sidebar">
+<div class="brand"><div class="brand-mark">AI</div><div><h1>Puter AI Chat</h1><span>Browser-native AI chat</span></div></div>
+<button id="newChatBtn" class="new-chat">+ New chat</button>
+<div class="sidebar-section"><div class="section-label">Model</div><select id="modelSelect" aria-label="AI model"><option value="gpt-5.6-luna">GPT-5.6 Luna</option><option value="gpt-5.5">GPT-5.5</option><option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option><option value="claude-sonnet-4-5">Claude Sonnet 4.5</option></select></div>
+<div class="sidebar-section"><div class="section-label">Features</div><div class="feature-list"><span>Streaming responses</span><span>Multi-turn context</span><span>Local chat history</span><span>No app API key</span></div></div>
+<div class="sidebar-footer"><a href="https://developer.puter.com" target="_blank" rel="noreferrer">Powered by Puter</a></div>
+</aside>
+<main class="chat-panel"><header class="topbar"><div><div class="eyebrow">AI ASSISTANT</div><h2 id="chatTitle">New conversation</h2></div><button id="clearBtn" class="ghost-btn" type="button">Clear</button></header>
+<section id="messages" class="messages" aria-live="polite"></section>
+<div class="composer-wrap"><div class="suggestions" id="suggestions"><button type="button" data-prompt="Explain gradient descent in simple terms.">Explain gradient descent</button><button type="button" data-prompt="Give me a study plan for machine learning.">Create a study plan</button><button type="button" data-prompt="Help me debug a Python error.">Debug Python</button></div>
+<form id="chatForm" class="composer"><textarea id="promptInput" rows="1" placeholder="Message the AI..." aria-label="Message"></textarea><button id="sendBtn" class="send-btn" type="submit"><span>Send</span></button></form><div class="composer-note">Enter to send · Shift+Enter for a new line</div></div>
+</main></div><script src="app.js"></script></body></html>
