@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="A polished Markdown-first AI chat app powered by Puter.js.">
 <title>Puter AI Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="https://js.puter.com/v2/"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -13,20 +16,81 @@
 </head>
 <body>
 <div class="app-shell">
-  <aside class="sidebar">
-    <div class="brand"><div class="brand-mark">✦</div><div><h1>Puter AI Chat</h1><span>Markdown-first assistant</span></div></div>
-    <button id="newChatBtn" class="new-chat" type="button"><span>＋</span> New chat</button>
-    <div class="sidebar-section"><div class="section-label">Model</div><select id="modelSelect" aria-label="AI model"><option value="gpt-5.6-luna">GPT-5.6 Luna</option><option value="gpt-5.5">GPT-5.5</option><option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option><option value="claude-sonnet-4-5">Claude Sonnet 4.5</option></select></div>
-    <div class="sidebar-section"><div class="section-label">Workspace</div><div class="feature-list"><span>Rich Markdown rendering</span><span>Syntax-highlighted code</span><span>Copy code &amp; responses</span><span>Streaming responses</span><span>Local chat history</span></div></div>
-    <div class="sidebar-footer"><a href="https://developer.puter.com" target="_blank" rel="noreferrer">Powered by Puter.js</a></div>
+  <aside id="sidebar" class="sidebar" aria-label="Chat sidebar">
+    <div class="sidebar-head">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <div class="brand-copy"><h1>Puter AI</h1><span>Markdown-first assistant</span></div>
+      </div>
+      <button id="desktopSidebarBtn" class="icon-btn sidebar-collapse" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">‹</button>
+    </div>
+
+    <button id="newChatBtn" class="new-chat" type="button"><span class="new-chat-icon">＋</span><span>New chat</span><kbd>Ctrl K</kbd></button>
+
+    <div class="sidebar-section">
+      <div class="section-head"><span class="section-label">Model</span><span id="modelStatus" class="status-dot">Ready</span></div>
+      <div class="model-select-wrap">
+        <select id="modelSelect" aria-label="AI model">
+          <option value="gpt-5.6-luna">GPT-5.6 Luna</option>
+          <option value="gpt-5.5">GPT-5.5</option>
+          <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
+          <option value="claude-sonnet-4-5">Claude Sonnet 4.5</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sidebar-section sidebar-info">
+      <div class="section-label">Workspace</div>
+      <div class="feature-card">
+        <div class="feature-row"><span class="feature-icon">Aa</span><span>Rich Markdown</span></div>
+        <div class="feature-row"><span class="feature-icon">&lt;/&gt;</span><span>Code blocks</span></div>
+        <div class="feature-row"><span class="feature-icon">↗</span><span>Streaming responses</span></div>
+        <div class="feature-row"><span class="feature-icon">◷</span><span>Local chat history</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="local-note"><span class="local-indicator"></span><span>Chats stay in this browser</span></div>
+      <a class="powered-link" href="https://developer.puter.com" target="_blank" rel="noreferrer">Powered by Puter.js ↗</a>
+    </div>
   </aside>
+
+  <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
   <main class="chat-panel">
-    <header class="topbar"><div class="title-wrap"><div class="eyebrow">AI ASSISTANT</div><h2 id="chatTitle">New conversation</h2></div><div class="top-actions"><button id="clearBtn" class="ghost-btn" type="button">Clear chat</button></div></header>
-    <section id="messages" class="messages" aria-live="polite"></section>
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="mobileSidebarBtn" class="icon-btn mobile-menu" type="button" aria-label="Open sidebar" title="Open sidebar">☰</button>
+        <div class="title-wrap">
+          <div class="eyebrow">AI ASSISTANT</div>
+          <h2 id="chatTitle">New conversation</h2>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div id="modelBadge" class="model-badge">GPT-5.6 Luna</div>
+        <button id="themeBtn" class="icon-btn" type="button" aria-label="Toggle theme" title="Toggle theme">☾</button>
+        <button id="clearBtn" class="ghost-btn" type="button">Clear</button>
+      </div>
+    </header>
+
+    <section id="messages" class="messages" aria-live="polite" aria-label="Conversation"></section>
+    <button id="scrollDownBtn" class="scroll-down" type="button" aria-label="Scroll to latest message" title="Scroll to latest message">↓</button>
+
     <div class="composer-wrap">
-      <div class="suggestions" id="suggestions"><button type="button" data-prompt="Explain gradient descent in simple terms with an example.">Explain gradient descent</button><button type="button" data-prompt="Create a study plan for machine learning in Markdown.">Create a study plan</button><button type="button" data-prompt="Write a Python example and explain each part.">Python example</button></div>
-      <form id="chatForm" class="composer"><textarea id="promptInput" rows="1" placeholder="Message the AI..." aria-label="Message"></textarea><button id="sendBtn" class="send-btn" type="submit"><span>Send</span><span class="send-icon">↑</span></button></form>
-      <div class="composer-note">Enter to send · Shift+Enter for a new line · Responses support Markdown</div>
+      <div class="suggestions" id="suggestions" aria-label="Suggested prompts">
+        <button type="button" data-prompt="Explain gradient descent in simple terms with a small example."><span>Learn</span> Gradient descent</button>
+        <button type="button" data-prompt="Create a structured study plan for machine learning in Markdown."><span>Plan</span> Study roadmap</button>
+        <button type="button" data-prompt="Write a clean Python example and explain each part."><span>Code</span> Python example</button>
+        <button type="button" data-prompt="Compare two concepts in a clear Markdown table."><span>Compare</span> Build a table</button>
+      </div>
+
+      <form id="chatForm" class="composer">
+        <div class="composer-inner">
+          <textarea id="promptInput" rows="1" placeholder="Message Puter AI..." aria-label="Message"></textarea>
+          <div class="composer-tools"><span class="markdown-badge">Markdown</span><button id="sendBtn" class="send-btn" type="submit"><span>Send</span><span class="send-icon">↑</span></button></div>
+        </div>
+      </form>
+      <div class="composer-note"><span>Enter to send</span><span>•</span><span>Shift + Enter for a new line</span></div>
     </div>
   </main>
 </div>
